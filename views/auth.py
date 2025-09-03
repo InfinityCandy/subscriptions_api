@@ -22,12 +22,3 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully!"}), 200
-
-
-@auth_blueprint.route('/profile')
-@login_required
-def profile():
-    return jsonify({
-        "message": f"Welcome, {current_user.email}!",
-        "email": current_user.email
-    }), 200

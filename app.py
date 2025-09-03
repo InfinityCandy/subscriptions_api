@@ -6,6 +6,7 @@ from models.subscription import SubscriptionPlan
 from views.user import user_blueprint
 from views.auth import auth_blueprint
 from views.subscription import subscription_blueprint
+from views.plan import plan_blueprint
 
 
 app = Flask(__name__)
@@ -29,4 +30,5 @@ def load_user(user_id):
 
 app.register_blueprint(user_blueprint, url_prefix="/user")
 app.register_blueprint(auth_blueprint, url_prefix="/auth")
+app.register_blueprint(plan_blueprint, url_prefix="/plan")
 app.register_blueprint(subscription_blueprint, url_prefix="/subscription")

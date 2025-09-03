@@ -7,63 +7,6 @@ from models.subscription import SubscriptionPlan, Subscription
 subscription_blueprint = Blueprint("subscription", __name__)
 
 
-@subscription_blueprint.route("/plan", methods=["POST"])
-def create_subscription_blueprint():
-    data = request.get_json()
-
-    plan_name = data["plan_name"]
-    cost = data["cost"]
-    months_duration = data["months_duration"]
-
-    new_subscription_plan = SubscriptionPlan(
-        plan_name=plan_name,
-        cost=cost,
-        months_duration=months_duration
-    )
-
-    try:
-        db.session.add(new_subscription_plan)
-        db.session.commit()
-
-        return jsonify({
-            "message": "Subscription Plan registered successfully!",
-            "user_id": new_subscription_plan.id
-        }), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
-
-
-@subscription_blueprint.route('/plan/<int:subscription_plan_id>', methods=["GET"])
-def get_plan(subscription_plan_id):
-    plan = SubscriptionPlan.query.get_or_404(subscription_plan_id)
-
-    plan_data = {
-        "id": plan.id,
-        "plan_name": plan.plan_name,
-        "cost": plan.cost,
-        "months_duration": plan.months_duration
-    }
-
-    return jsonify(plan_data), 200
-
-
-@subscription_blueprint.route("/plans", methods=["GET"])
-def list_plans():
-    plans = SubscriptionPlan.query.all()
-
-    plans_list = []
-    for plan in plans:
-        plans_list.append({
-            "id": plan.id,
-            "plan_name": plan.plan_name,
-            "cost": plan.cost,
-            "months_duration": plan.months_duration
-        })
-
-    return jsonify(plans_list), 200
-
-
 @subscription_blueprint.route("/subscribe", methods=["POST"])
 @login_required
 def subscribe():
