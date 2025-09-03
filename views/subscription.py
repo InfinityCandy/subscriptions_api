@@ -1,3 +1,4 @@
+import sqlite3
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
 from flask_login import current_user, login_required
@@ -135,3 +136,30 @@ def cancel_subscription():
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 500
+
+
+@subscription_blueprint.route('/active_subscriptions', methods=["GET"])
+@login_required
+def list_active_subscriptions():
+    conn = sqlite3.connect("instance/subscriptions.sqlite3")
+    conn.row_factory = sqlite3.Row
+
+    cursor = conn.cursor()
+    query = """
+        SELECT s.id, s.start_date, s.payment_start_date, s.payment_end_date,
+        s.to_be_canceled, s.active, sp.plan_name, u.id as user_id
+        FROM subscription s
+        JOIN subscription_plan sp ON s.plan_id = sp.id
+        JOIN user u ON s.user_id = u.id 
+        WHERE active = true
+    """
+    cursor.execute(query)
+
+    active_subs = cursor.fetchall()
+
+    subs = []
+    for sub in active_subs:
+        serilized_sub = dict(sub)
+        subs.append(serilized_sub)
+
+    return jsonify(subs), 200

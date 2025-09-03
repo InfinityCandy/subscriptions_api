@@ -34,3 +34,7 @@ class Subscription(db.Model):
         db.ForeignKey("user.id"),
         nullable=False
     )
+
+    __table_args__ = (
+        db.Index('ix_active', 'active'),
+    )
