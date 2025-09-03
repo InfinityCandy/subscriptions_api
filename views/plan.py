@@ -11,6 +11,11 @@ plan_blueprint = Blueprint("plan", __name__)
 @plan_blueprint.route("/", methods=["POST"])
 @login_required
 def create_plan():
+    if not current_user.user_type == UserType.ADMIN:
+        return jsonify({
+            "message": "Unauthorized user!",
+        }), 401
+
     data = request.get_json()
 
     plan_name = data["plan_name"]

@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import current_user, login_required
 from extensions import db
 from models.subscription import SubscriptionPlan, Subscription
+from models.user import UserType
 
 subscription_blueprint = Blueprint("subscription", __name__)
 
@@ -141,6 +142,11 @@ def cancel_subscription():
 @subscription_blueprint.route('/active_subscriptions', methods=["GET"])
 @login_required
 def list_active_subscriptions():
+    if not current_user.user_type == UserType.ADMIN:
+        return jsonify({
+            "message": "Unauthorized user!",
+        }), 401
+
     conn = sqlite3.connect("instance/subscriptions.sqlite3")
     conn.row_factory = sqlite3.Row
 

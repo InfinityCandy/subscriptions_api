@@ -32,7 +32,8 @@ class Subscription(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id"),
-        nullable=False
+        nullable=False,
+        unique=True
     )
 
     __table_args__ = (
