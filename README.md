@@ -64,7 +64,7 @@ $ flask shell
 >>> populate_subscription_plans()
 ```
 
-## Optimizations Stategies
+## Optimizations Strategies
 
 - Relationships Lazy Load: The argument "lazy=True" was used when defining relationships between models, so, only when explicitly calling the other end of the relationship the records associated to this model are going to be loaded, otherwise it will only load the main model.
 - Raw Queries: Using raw queries that where directly sent to the DB instead of calling the ORM it's a recommended strategy to improve the speed of any query.
